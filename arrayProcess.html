@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Itxap Test</title>
+</head>
+<body>
+    <h2>Manipulación de Matriz</h2>
+    <div class="inputs">
+        <div class="input-div">
+            <label for="rows">Filas:</label>
+            <input type="number" id="rows" min="1">
+        </div>
+        <div class="input-div">
+            <label for="cols">Columnas:</label>
+            <input type="number" id="cols" min="1">
+        </div>
+    </div>
+    <div class="actions">
+        <button onclick="createMatrix()">Crear Matriz</button>
+        <button onclick="sortMatrix()">Ordenar</button>
+        <button onclick="mirrorMatrix()">Espejo</button>
+        <button onclick="saveArray()">Guardar en Database</button>
+        <button onclick="getArray()">Mostrar de Database</button>
+    </div>
+    <div id="matrixContainer"></div>  
+    <hr>
+    <div class="container">
+        <div id="matrixContainerDatabase"></div>
+        <div id="finalMatrixContainerDatabase"></div>    
+    </div>
+</body>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=Ubuntu:wght@300;700&display=swap');
+    body{
+        font-family: 'Ubuntu';
+        font-size: 16px;
+    }
+    h2 {
+        text-align: center;
+    }
+
+    .inputs {
+        display: flex;
+        justify-content: center;
+        gap: 80px;
+    }
+
+    .input-div {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .container{
+        height: 100%;
+        width: 100%;
+        display:flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+    }
+
+    #matrixContainer {
+        flex-grow: 1;
+        height: 30vh;
+        max-width: 30vw;
+        margin: auto;
+        padding: 16px;
+        display: grid;
+        justify-content: center;
+        align-items: center;
+        background: rgba(240, 113, 223, 0.3); 
+        border-radius: 8px;
+        position: relative;
+    }
+
+    #matrixContainer::after{
+        content: 'Transforma el array';
+        position: absolute;
+        left: 0;
+        top: 0;
+        padding: 8px;
+        font-weight: 700;
+        color: rgb(80, 80, 80);
+    }
+
+    #matrixContainer>div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #matrixContainerDatabase {
+        flex-grow: 1;
+        height: 30vh;
+        width: 100%;
+        margin: auto;
+        padding: 8px;
+        display: grid;
+        justify-content: center;
+        align-items: center;
+        background: rgba(90, 222, 255, 0.3); 
+        border-radius: 8px;
+        position: relative;
+    }
+
+    #matrixContainerDatabase::after{
+        content: 'Valor Original';
+        position: absolute;
+        left: 0;
+        top: 0;
+        padding: 8px;
+        font-weight: 700;
+        color: rgb(80, 80, 80);
+    }
+
+    #finalMatrixContainerDatabase {
+        flex-grow: 1;
+        height: 30vh;
+        width: 100%;
+        margin: auto;
+        padding: 8px;
+        display: grid;
+        justify-content: center;
+        align-items: center;
+        background: rgba(90, 222, 255, 0.3); 
+        border-radius: 8px;
+        position: relative;
+    }
+
+    #finalMatrixContainerDatabase::after{
+        content: 'Valor Final';
+        position: absolute;
+        left: 0;
+        top: 0;
+        padding: 8px;
+        font-weight: 700;
+        color: rgb(80, 80, 80, .8);
+    }
+
+    #finalMatrixContainerDatabase>div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #matrixContainerDatabase>div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    } 
+
+    .actions {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 40px;
+        padding: 16px;
+    }
+
+    button {
+        border: 2px solid rgba(124, 124, 124, 0.8);
+        text-transform: uppercase;
+        border-radius: 8px;
+        padding: 8px;
+        background: none;
+        color: rgb(80, 80, 80)
+    }
+</style>
+<script>
+    let initialMatrix = new Array()
+    let currentMatrix = new Array()
+    let rows, cols = null
+    let isFinalArray = false
+
+    function createMatrix() { 
+        isFinalArray = false
+        initialMatrix = new Array()
+        currentMatrix = new Array()
+        rows = parseInt(document.getElementById("rows").value)
+        cols = parseInt(document.getElementById("cols").value)
+        checkInputs()
+
+        for (let i = 0; i < rows; i++) {
+            for (let j = 0; j < cols; j++) {
+                currentMatrix.push(Math.floor(Math.random() * 1000) + 1)
+            }
+        }
+
+        initialMatrix = currentMatrix
+        updateMatrixDisplay(currentMatrix)
+    }
+
+    function checkMatrix() {
+        if (currentMatrix.length === 0) {
+            alert("Primero crea una matriz")
+            return
+        }
+    }
+
+    function checkInputs() {
+        if (!rows > 0 && !cols > 0) {
+            alert("Rellena las filas y columnas con numeros mayores a 0")
+            return
+        }
+    }
+
+    function sortMatrix() {
+        checkMatrix()
+
+        const sortedMatrix = [...currentMatrix]
+        const rows = sortedMatrix.length
+
+        for (let i = 0; i < rows; i++) {
+            for (let j = 0; j < rows - i - 1; j++) {
+                if (sortedMatrix[j] > sortedMatrix[j + 1]) {
+                    const temp = sortedMatrix[j]
+                    sortedMatrix[j] = sortedMatrix[j + 1]
+                    sortedMatrix[j + 1] = temp
+                }
+            }
+        }
+
+        currentMatrix = sortedMatrix
+
+        updateMatrixDisplay(sortedMatrix)
+    }
+
+    function mirrorMatrix() {
+        checkMatrix()
+
+        const mirroredMatrix = customReverse(currentMatrix)
+        currentMatrix = mirroredMatrix
+
+        isFinalArray = true
+        updateMatrixDisplay(mirroredMatrix)
+    }
+
+    function customReverse(array) {
+        const reversedArray = []
+        for (let i = array.length - 1; i >= 0; i--) {
+            reversedArray.push(array[i])
+        }
+        return reversedArray
+    }
+
+    function updateMatrixDisplay(array) {
+        const matrixContainer = document.getElementById("matrixContainer")
+        matrixContainer.innerHTML = ""
+
+        const totalCells = array.length
+        for (let i = 0; i < totalCells; i++) {
+            const cellDiv = document.createElement("div")
+            cellDiv.textContent = array[i]
+            matrixContainer.appendChild(cellDiv)
+        }
+
+        matrixContainer.style.display = "grid"
+        matrixContainer.style.gridTemplateColumns = `repeat(${cols}, 1fr)`
+    }
+
+    async function getArray() {
+        try {
+            const array = await fetch('http://localhost:3000/api/matrix')
+            if (!array.ok) alert('No hay datos en Database')
+            const { data } = await array.json()
+            console.log(data)
+            displayDatabaseMatrix(data[0].value, data[0].columns)
+            displayDatabaseFinalMatrix(data[0].finalValue, data[0].columns)
+
+        } catch (err) {
+            console.log('err', err)
+        }
+    }
+
+    async function saveArray() {
+        checkForSave()
+
+        try{
+            const array = await fetch('http://localhost:3000/api/matrix',{
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({rows, columns: cols, 
+                    value: JSON.stringify(initialMatrix), 
+                    finalValue: JSON.stringify(currentMatrix) })
+            })
+            alert('Guardardo correctamente en Database')
+        }catch(err) {
+            console.log('err', err)
+        }
+    }
+
+    function checkForSave() {
+        checkMatrix()
+
+        if(!isFinalArray) {
+            alert('Ya debes haber aplicado las acciones de Ordenar y Espejo')
+        }
+    }
+
+    function displayDatabaseMatrix(array, cols) {
+        const matrixContainerDB = document.getElementById("matrixContainerDatabase")
+        matrixContainerDB.innerHTML = ""
+
+        const totalCells = array.length
+        for (let i = 0; i < totalCells; i++) {
+            const cellDiv = document.createElement("div")
+            cellDiv.textContent = array[i]
+            matrixContainerDB.appendChild(cellDiv)
+        }
+
+        matrixContainerDB.style.display = "grid"
+        matrixContainerDB.style.gridTemplateColumns = `repeat(${cols}, 1fr)`
+    }
+
+    function displayDatabaseFinalMatrix(array, cols) {
+        const matrixContainerDB = document.getElementById("finalMatrixContainerDatabase")
+        matrixContainerDB.innerHTML = ""
+
+        console.log(array)
+        const totalCells = array.length
+        for (let i = 0; i < totalCells; i++) {
+            const cellDiv = document.createElement("div")
+            cellDiv.textContent = array[i]
+            matrixContainerDB.appendChild(cellDiv)
+        }
+
+        matrixContainerDB.style.display = "grid"
+        matrixContainerDB.style.gridTemplateColumns = `repeat(${cols}, 1fr)`
+    }
+</script>
+
+</html>
